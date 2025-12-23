@@ -4,17 +4,23 @@ import cors from 'cors';
 import userRoutes from './routes/userRoutes.js';
 import { connectDB } from './config/db.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import { logger } from './middlewares/logger.js';
 
 dotenv.config(); //Carrega variáveis do .env
 connectDB();
 
 const app = express(); //Cria a aplicação Express
 
+//Middlewares -> funções que processam requisições antes de chegarem nas rotas
+
+app.use(cors());
 // cors controla quem pode acessar a sua API.
 // Por padrão, o navegador bloqueia requisições feitas de domínios diferentes (por exemplo, seu front-end hospedado em outro servidor).
 // O cors() libera esse acesso, permitindo que seu site (frontend) consiga consumir a API sem erro.
-app.use(cors());
+
 app.use(express.json());
+
+app.use(logger);
 
 app.use('/users', userRoutes);
 
