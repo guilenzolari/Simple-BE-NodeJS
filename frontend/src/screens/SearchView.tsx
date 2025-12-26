@@ -1,20 +1,24 @@
-import { memo } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet } from 'react-native';
+import SearchBar from '../components/SearchBar';
 
-const SearchView: React.FC = () => {
+const SearchView = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+
   return (
-    <View style={styles.container}>
-      <Text>Search View</Text>
+    <View style={styles.screen}>
+      <SearchBar value={searchQuery} onChangeText={setSearchQuery} />
+      //TODO: Implement search results list with FlatList
     </View>
   );
 };
 
-export default memo(SearchView);
-
 const styles = StyleSheet.create({
-  container: {
+  screen: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: '#fff',
+    paddingHorizontal: 16,
   },
 });
+
+export default SearchView;
