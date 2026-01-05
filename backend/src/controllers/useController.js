@@ -78,24 +78,27 @@ export const updateUserByID = async (req, res) => {
 
 // Adicionar ID de amigo ao usuário
 export const addFriend = async (req, res) => {
-  const { error } = userValidationSchema.validate(req.body);
-  if (error) {
-    throw new AppError(error.details.map((detail) => detail.message).join(', '), 422);
+  const { id } = req.params;
+  const { friendId } = req.body;
+
+  if (id === friendId) {
+    throw new AppError('Cannot add yourself as a friend', 400);
   }
-  const user = await User.findById(req.params.id);
-  if (!user) throw new AppError('User not found', 404);
 
-  const friend = await User.getUserByUsername(req.body.username);
-  if (!friend) throw new AppError('Friend not found', 404);
+  const [user, friend] = await Promise.all([User.findById(id), User.findById(friendId)]);
 
-  if (user.friends.includes(friend._id)) {
+  if (!user || !friend) throw new AppError('User or Friend not found', 404);
+
+  if (user.friends.includes(friendId)) {
     throw new AppError('Friend already added', 409);
   }
 
-  user.friends.push(friend._id);
-  await user.save();
+  user.friends.push(friendId);
+  friend.friends.push(id);
 
-  res.json(user);
+  await Promise.all([user.save(), friend.save()]);
+
+  res.json({ message: 'Friend added successfully', user });
 };
 
 //DELETE usuário por ID
