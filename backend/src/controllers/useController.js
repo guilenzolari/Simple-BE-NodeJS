@@ -39,11 +39,13 @@ export const getUserById = async (req, res) => {
 
 //Listar usuários por ID
 export const getUsersByIDs = async (req, res) => {
-  const users = await User.find({ _id: { $in: req.body.ids } });
+  const { ids } = req.body;
 
-  if (!Array.isArray(req.body.ids) || req.body.ids.length === 0) {
+  if (!ids || !Array.isArray(ids) || ids.length === 0) {
     throw new AppError('IDs array is required', 400);
   }
+
+  const users = await User.find({ _id: { $in: ids } });
 
   if (users.length === 0) {
     throw new AppError('No users found', 404);
