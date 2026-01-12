@@ -1,38 +1,45 @@
 import React, { memo } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { User } from '../store/types';
+import { View, StyleSheet, Text, ActivityIndicator } from 'react-native';
 import InfoList from '../components/InfoList';
 import { phoneFormatter } from '../utils/dataUtils';
-
-const user: User = {
-  _id: '1',
-  firstName: 'John',
-  lastName: 'Doe',
-  username: 'johndoe',
-  email: 'john.doe@example.com',
-  phone: '1234567890',
-  age: 30,
-  password: 'password123',
-  UF: 'SP',
-  friendIds: ['2', '3'],
-  shareInfoWithPublic: false,
-};
-
-const userBasicInfo = [
-  { info: 'Name', data: `${user.firstName} ${user.lastName}` },
-  { info: 'Email', data: user.email },
-];
-
-const userContactInfo = [
-  { info: 'Phone', data: phoneFormatter(user.phone) || '' },
-  { info: 'Location', data: user.UF || '' },
-];
-
-const userFriendshipInfo = [
-  { info: 'Number of friends', data: user.friendIds.length.toString() || '0' },
-];
+import { useRoute, RouteProp } from '@react-navigation/native';
+import { useGetUserQuery } from '../store/apiSlice';
 
 const FriendProfileView: React.FC = () => {
+  const route = useRoute<RouteProp<{ params: { friendID: string } }>>();
+  const { friendID } = route.params;
+
+  const { data: friendData, isLoading, isError } = useGetUserQuery(friendID);
+
+  if (isLoading || !friendData) {
+    return <ActivityIndicator size="large" style={styles.loadingContainer} />;
+  }
+
+  if (isError) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.text}>Error loading friends</Text>
+      </View>
+    );
+  }
+
+  const userBasicInfo = [
+    { info: 'Name', data: `${friendData.firstName} ${friendData.lastName}` },
+    { info: 'Email', data: friendData.email },
+  ];
+
+  const userContactInfo = [
+    { info: 'Phone', data: phoneFormatter(friendData.phone) || '' },
+    { info: 'Location', data: friendData.UF || '' },
+  ];
+
+  const userFriendshipInfo = [
+    {
+      info: 'Number of friends',
+      data: friendData.friends.length.toString() || '0',
+    },
+  ];
+
   return (
     <View style={styles.container}>
       <View style={styles.container}>
@@ -66,6 +73,16 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#ff0000ff',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 18,
+    textAlign: 'center',
+    justifyContent: 'center',
   },
 });
 

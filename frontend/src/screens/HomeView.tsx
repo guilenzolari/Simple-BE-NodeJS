@@ -20,17 +20,20 @@ const HomeView: React.FC = () => {
   } = useGetUsersByBatchQuery(friendsIds, {
     skip: !friendsIds || friendsIds.length === 0,
   });
-  console.log('friends data:', friends);
-  console.log('isLoading:', isLoading);
-  console.log('isError:', isError);
 
-  const navigateToFriendProfile = useCallback(() => {
-    navigation.navigate('FriendProfileView');
-  }, [navigation]);
+  const navigateToFriendProfile = useCallback(
+    (friendID: string) => {
+      navigation.navigate('FriendProfileView', { friendID });
+    },
+    [navigation],
+  );
 
   const renderItem = useCallback(
     ({ item }: { item: FriendDisplayData }) => (
-      <FriendCard friend={item} onPress={() => navigateToFriendProfile()} />
+      <FriendCard
+        friend={item}
+        onPress={() => navigateToFriendProfile(item._id)}
+      />
     ),
     [navigateToFriendProfile],
   );
