@@ -14,6 +14,7 @@ const ProfileView: React.FC = () => {
 
   const infoSections = useMemo(
     () => ({
+      username: [{ info: 'Username', data: userData?.username || '' }],
       basic: [
         {
           info: 'Name',
@@ -50,6 +51,7 @@ const ProfileView: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.container}>
+        <InfoList items={infoSections.username} />
         <InfoList items={infoSections.basic} />
         <InfoList items={infoSections.contact} />
         <InfoList items={infoSections.friendship} />

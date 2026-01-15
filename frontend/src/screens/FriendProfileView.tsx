@@ -23,6 +23,8 @@ const FriendProfileView: React.FC = () => {
     );
   }
 
+  const userUsername = [{ info: 'Username', data: friendData?.username || '' }];
+
   const userBasicInfo = [
     { info: 'Name', data: `${friendData.firstName} ${friendData.lastName}` },
     { info: 'Email', data: friendData.email },
@@ -43,6 +45,7 @@ const FriendProfileView: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.container}>
+        <InfoList items={userUsername} />
         <InfoList items={userBasicInfo} />
         <InfoList items={userContactInfo} />
         <InfoList items={userFriendshipInfo} />

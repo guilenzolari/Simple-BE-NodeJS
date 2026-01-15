@@ -13,6 +13,7 @@ export const apiSlice = createApi({
       providesTags: ['User'],
       keepUnusedDataFor: 300, // Mantém os dados em cache por 5 minutos
     }),
+    // TODO: user o ID do usuário autenticado para buscar seus dados ao invés de passar uma lista de IDs
     getUsersByBatch: builder.query<User[], string[]>({
       query: ids => ({
         url: '/users/batch',
