@@ -11,13 +11,19 @@ import {
 
 const HomeView: React.FC = () => {
   const navigation = useNavigation<any>();
-  const { data: userData } = useGetCurrentUserQuery();
+  const {
+    data: userData,
+    isFetching: isFetchingUser,
+    refetch: refetchUser,
+  } = useGetCurrentUserQuery();
   const friendsIds = userData?.friends || [];
 
   const {
     data: friends,
-    isLoading,
+    isLoading: isLoadingFriends,
+    isFetching: isFetchingFriends,
     isError,
+    refetch: refetchFriends,
   } = useGetUsersByBatchQuery(friendsIds, {
     skip: !friendsIds || friendsIds.length === 0,
   }); // TODO: fetch friends just using the userId not passing all friend IDs
@@ -29,6 +35,13 @@ const HomeView: React.FC = () => {
     [navigation],
   );
 
+  const onRefresh = useCallback(async () => {
+    await refetchUser();
+    if (friendsIds && friendsIds.length > 0) {
+      await refetchFriends();
+    }
+  }, [refetchUser, refetchFriends]);
+
   const renderItem = useCallback(
     ({ item }: { item: FriendDisplayData }) => (
       <FriendCard
@@ -39,7 +52,7 @@ const HomeView: React.FC = () => {
     [navigateToFriendProfile],
   );
 
-  if (isLoading) {
+  if (isLoadingFriends && !friends) {
     return <ActivityIndicator size="large" style={styles.loadingContainer} />;
   }
 
@@ -66,6 +79,8 @@ const HomeView: React.FC = () => {
         renderItem={renderItem}
         keyExtractor={item => item._id}
         contentContainerStyle={styles.itemsContainer}
+        onRefresh={onRefresh}
+        refreshing={isFetchingFriends || isFetchingUser}
       />
     </View>
   );
