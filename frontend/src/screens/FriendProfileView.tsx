@@ -1,25 +1,32 @@
 import React, { memo } from 'react';
-import { View, StyleSheet, Text, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import InfoList from '../components/InfoList';
 import { phoneFormatter } from '../utils/dataUtils';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useGetUserQuery } from '../store/apiSlice';
+import ErrorRetryView from './ErrorRetryView';
 
 const FriendProfileView: React.FC = () => {
   const route = useRoute<RouteProp<{ params: { friendID: string } }>>();
   const { friendID } = route.params;
 
-  const { data: friendData, isLoading, isError } = useGetUserQuery(friendID);
+  const {
+    data: friendData,
+    isLoading,
+    error,
+    refetch,
+  } = useGetUserQuery(friendID);
 
   if (isLoading || !friendData) {
     return <ActivityIndicator size="large" style={styles.loadingContainer} />;
   }
 
-  if (isError) {
+  if (error) {
     return (
-      <View style={styles.loadingContainer}>
-        <Text style={styles.text}>Error loading friends</Text>
-      </View>
+      <ErrorRetryView
+        errorMessage={`Failed to load user data. ${error}`}
+        onRetry={refetch}
+      />
     );
   }
 
@@ -44,12 +51,10 @@ const FriendProfileView: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.container}>
-        <InfoList items={userUsername} />
-        <InfoList items={userBasicInfo} />
-        <InfoList items={userContactInfo} />
-        <InfoList items={userFriendshipInfo} />
-      </View>
+      <InfoList items={userUsername} />
+      <InfoList items={userBasicInfo} />
+      <InfoList items={userContactInfo} />
+      <InfoList items={userFriendshipInfo} />
     </View>
   );
 };

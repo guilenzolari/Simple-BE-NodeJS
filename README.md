@@ -213,7 +213,7 @@ npm test
 - ✅ Redux Toolkit
 - ⏳ Connect with API (RTK Query)
   - TODO: Implement pull-to-refresh functionality
-  - TODO: Add error handling and retry mechanism
+  - ✅ TODO: Add error handling and retry mechanism
   - TODO: implement pagination for large friend lists
 - ⏳ Implement screens
   - Home ✅

@@ -5,18 +5,13 @@ import AppNavigator from './navigation/AppNavigator';
 import { Provider } from 'react-redux';
 import store from './store/index';
 import { useGetCurrentUserQuery } from './store/apiSlice';
-import { Text, ActivityIndicator, View, StyleSheet } from 'react-native';
+import { ActivityIndicator, View, StyleSheet } from 'react-native';
+import ErrorRetryView from './screens/ErrorRetryView';
 
 const AppContent = () => {
-  const { error, isLoading, data } = useGetCurrentUserQuery();
+  const { error, isLoading, refetch } = useGetCurrentUserQuery();
 
-  console.log('RTK Query Status:', {
-    hasData: !!data,
-    error: error,
-    loading: isLoading,
-  });
-
-  console.log('Current User Data:', data);
+  console.log('Current User Data:');
 
   if (isLoading) {
     return (
@@ -27,11 +22,11 @@ const AppContent = () => {
   }
 
   if (error) {
-    // TODO: improve error handling
     return (
-      <View style={styles.errorContainer}>
-        <Text>Error loading user data</Text>
-      </View>
+      <ErrorRetryView
+        errorMessage={`Failed to load user data. ${error}`}
+        onRetry={refetch}
+      />
     );
   }
 
