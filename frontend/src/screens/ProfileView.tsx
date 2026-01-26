@@ -1,4 +1,4 @@
-import React, { memo, useMemo } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
@@ -10,35 +10,47 @@ import InfoList from '../components/InfoList';
 import ToggleCell from '../components/ToggleCell';
 import { phoneFormatter } from '../utils/dataUtils';
 import { useGetCurrentUserQuery } from '../store/apiSlice';
+import { useTranslation } from 'react-i18next';
 
 const voidFunction = () => {};
 
 const ProfileView: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const { data: userData, isFetching } = useGetCurrentUserQuery();
 
   const infoSections = useMemo(
     () => ({
-      username: [{ info: 'Username', data: userData?.username || '' }],
+      username: [
+        { info: t('profile.username'), data: userData?.username || '' },
+      ],
       basic: [
         {
-          info: 'Name',
+          info: t('profile.name'),
           data: `${userData?.firstName || ''} ${userData?.lastName || ''}`,
         },
-        { info: 'Email', data: userData?.email || '' },
+        { info: t('profile.email'), data: userData?.email || '' },
       ],
       contact: [
-        { info: 'Phone', data: phoneFormatter(userData?.phone) || '' },
-        { info: 'Location', data: userData?.UF || '' },
+        {
+          info: t('profile.phone'),
+          data: phoneFormatter(userData?.phone) || '',
+        },
+        { info: t('profile.location'), data: userData?.UF || '' },
       ],
       friendship: [
         {
-          info: 'Number of friends',
+          info: t('profile.numberOfFriends'),
           data: userData?.friends.length.toString() || '0',
         },
       ],
     }),
-    [userData],
+    [userData, t],
   );
+
+  const handleToggleLanguage = useCallback(() => {
+    const nextLang = i18n.language === 'pt' ? 'en' : 'pt';
+    i18n.changeLanguage(nextLang);
+  }, [i18n]);
 
   if (!userData) return <ActivityIndicator size="large" />;
 
@@ -56,12 +68,18 @@ const ProfileView: React.FC = () => {
         <InfoList items={infoSections.friendship} />
 
         <ToggleCell
-          label="Share info with public"
+          label={t('profile.shareInfo')}
           isEnabled={userData.shareInfoWithPublic}
           onToggle={voidFunction} // TODO: implement toggle functionality
         />
+
+        <ToggleCell
+          label={t('profile.language')}
+          isEnabled={i18n.language === 'en'}
+          onToggle={handleToggleLanguage}
+        />
         <TouchableOpacity style={styles.button} onPress={logout}>
-          <Text style={styles.buttonText}>Logout</Text>
+          <Text style={styles.buttonText}>{t('profile.logout')}</Text>
         </TouchableOpacity>
       </View>
     </View>

@@ -5,10 +5,12 @@ import { phoneFormatter } from '../utils/dataUtils';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useGetUserQuery } from '../store/apiSlice';
 import ErrorRetryView from './ErrorRetryView';
+import { useTranslation } from 'react-i18next';
 
 const FriendProfileView: React.FC = () => {
   const route = useRoute<RouteProp<{ params: { friendID: string } }>>();
   const { friendID } = route.params;
+  const { t } = useTranslation();
 
   const {
     data: friendData,
@@ -24,27 +26,38 @@ const FriendProfileView: React.FC = () => {
   if (error) {
     return (
       <ErrorRetryView
-        errorMessage={`Failed to load user data. ${error}`}
+        errorMessage={`${t('errors.fetchFriends')} ${error}`}
         onRetry={refetch}
       />
     );
   }
 
-  const userUsername = [{ info: 'Username', data: friendData?.username || '' }];
+  const userUsername = [
+    {
+      info: t('friendsProfileView.username'),
+      data: friendData?.username || '',
+    },
+  ];
 
   const userBasicInfo = [
-    { info: 'Name', data: `${friendData.firstName} ${friendData.lastName}` },
-    { info: 'Email', data: friendData.email },
+    {
+      info: t('friendsProfileView.name'),
+      data: `${friendData.firstName} ${friendData.lastName}`,
+    },
+    { info: t('friendsProfileView.email'), data: friendData.email },
   ];
 
   const userContactInfo = [
-    { info: 'Phone', data: phoneFormatter(friendData.phone) || '' },
-    { info: 'Location', data: friendData.UF || '' },
+    {
+      info: t('friendsProfileView.phone'),
+      data: phoneFormatter(friendData.phone) || '',
+    },
+    { info: t('friendsProfileView.location'), data: friendData.UF || '' },
   ];
 
   const userFriendshipInfo = [
     {
-      info: 'Number of friends',
+      info: t('friendsProfileView.numberOfFriends'),
       data: friendData.friends.length.toString() || '0',
     },
   ];

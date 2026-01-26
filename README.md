@@ -220,7 +220,7 @@ npm test
   - Profile ✅
   - Search
   - FriendProfile
-- ⏳ i18n
+- ✅ i18n
 - Cleanup and improvements
 
 ### 🔴 Stage 4 — Security and authentication

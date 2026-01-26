@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useMemo } from 'react';
 import { View, FlatList, ActivityIndicator, Text } from 'react-native';
 import { StyleSheet } from 'react-native';
 import FriendCard from '../components/FriendCard';
@@ -8,15 +8,21 @@ import {
   useGetCurrentUserQuery,
   useGetUsersByBatchQuery,
 } from '../store/apiSlice';
+import { useTranslation } from 'react-i18next';
 
 const HomeView: React.FC = () => {
   const navigation = useNavigation<any>();
+  const { t } = useTranslation();
+
   const {
     data: userData,
     isFetching: isFetchingUser,
     refetch: refetchUser,
   } = useGetCurrentUserQuery();
-  const friendsIds = userData?.friends || [];
+  const friendsIds = useMemo(
+    () => userData?.friends || [],
+    [userData?.friends],
+  );
 
   const {
     data: friends,
@@ -40,7 +46,7 @@ const HomeView: React.FC = () => {
     if (friendsIds && friendsIds.length > 0) {
       await refetchFriends();
     }
-  }, [refetchUser, refetchFriends]);
+  }, [refetchUser, refetchFriends, friendsIds]);
 
   const renderItem = useCallback(
     ({ item }: { item: FriendDisplayData }) => (
@@ -59,7 +65,7 @@ const HomeView: React.FC = () => {
   if (isError) {
     return (
       <View style={styles.loadingContainer}>
-        <Text style={styles.text}>Error loading friends</Text>
+        <Text style={styles.text}>{t('errors.fetchFriends')}</Text>
       </View>
     );
   }
@@ -67,7 +73,7 @@ const HomeView: React.FC = () => {
   if (!friends || friends.length === 0) {
     return (
       <View style={styles.loadingContainer}>
-        <Text style={styles.text}>No friends found</Text>
+        <Text style={styles.text}>{t('errors.noFriendsFound')}</Text>
       </View>
     );
   }

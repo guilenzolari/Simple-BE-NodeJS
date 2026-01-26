@@ -1,0 +1,36 @@
+{
+  "common": {
+    "retry": "Retry",
+    "loading": "Loading..."
+  },
+  "profile": {
+    "username": "Username",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location",
+    "numberOfFriends": "Number of friends",
+    "shareInfo": "Share information with everyone",
+    "logout": "Sign out",
+    "language": "Language"
+  },
+  "errors": {
+    "fetchUser": "Error loading user data",
+    "fetchFriends": "Error loading friends",
+    "noFriendsFound": "No friends found"
+  },
+  "friendsProfileView": {
+    "username": "Username",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "location": "Location",
+    "numberOfFriends": "Number of friends"
+  },
+  "pageTitle": {
+    "friends": "Friends",
+    "search": "Search",
+    "profile": "Profile",
+    "friendProfile": "Friend Profile"
+  }
+}

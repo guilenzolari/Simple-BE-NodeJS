@@ -1,15 +1,17 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 const ErrorRetryView: React.FC<{
   errorMessage: string;
   onRetry: () => void;
 }> = ({ errorMessage, onRetry }) => {
+  const { t } = useTranslation();
   return (
     <View style={styles.container}>
       <Text style={styles.errorMessage}>{errorMessage}</Text>
       <TouchableOpacity style={styles.retryButton} onPress={onRetry}>
-        <Text style={styles.retryButtonText}>Retry</Text>
+        <Text style={styles.retryButtonText}>{t('common.retry')}</Text>
       </TouchableOpacity>
     </View>
   );

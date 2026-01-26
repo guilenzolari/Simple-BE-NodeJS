@@ -7,11 +7,12 @@ import store from './store/index';
 import { useGetCurrentUserQuery } from './store/apiSlice';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import ErrorRetryView from './screens/ErrorRetryView';
+import { useTranslation } from 'react-i18next';
+import './i18n'; // Garante a inicialização das traduções
 
 const AppContent = () => {
+  const { t } = useTranslation();
   const { error, isLoading, refetch } = useGetCurrentUserQuery();
-
-  console.log('Current User Data:');
 
   if (isLoading) {
     return (
@@ -24,7 +25,7 @@ const AppContent = () => {
   if (error) {
     return (
       <ErrorRetryView
-        errorMessage={`Failed to load user data. ${error}`}
+        errorMessage={`${t('errors.fetchUser')} ${error}`}
         onRetry={refetch}
       />
     );
